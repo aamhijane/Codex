@@ -5,7 +5,7 @@
 NAME        = codexion
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -pthread
+CFLAGS      = -Wall -Wextra -Werror -pthread -fsanitize=address -g3
 INC_DIR     = includes
 SRC_DIR     = src
 

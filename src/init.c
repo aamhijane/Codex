@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 22:46:34 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/09/24 20:54:00 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/09/27 19:30:52 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static int	init_coder(t_sim *sim, int i)
 	n = sim->args->number_of_coders;
 	if (pthread_mutex_init(&sim->coders[i].lock, NULL) != 0)
 		return (-1);
+	sim->coders[i].id = i + 1;
 	sim->coders[i].first = &sim->dongles[i];
 	sim->coders[i].second = &sim->dongles[(i + 1) % n];
 	if (n > 1 && i == n - 1)
@@ -46,6 +47,10 @@ int	init_simulation(t_sim *sim, t_args *args)
 {
 	int		i;
 
+	if (pthread_mutex_init(&sim->sim_lock, NULL) != 0)
+		return (-1);
+	if (pthread_mutex_init(&sim->log_lock, NULL) != 0)
+		return (-1);
 	sim->args = args;
 	allocate_dongles(sim);
 	allocate_coders(sim);
@@ -65,6 +70,8 @@ void	cleanup_simulation(t_sim *sim)
 {
 	int		i;
 
+	pthread_mutex_destroy(&sim->sim_lock);
+	pthread_mutex_destroy(&sim->log_lock);
 	i = 0;
 	while (i < sim->args->number_of_coders)
 	{
@@ -75,4 +82,5 @@ void	cleanup_simulation(t_sim *sim)
 	}
 	free_dongles(sim);
 	free_coders(sim);
+	free(sim->args->scheduler);
 }

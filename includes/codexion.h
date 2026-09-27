@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 21:50:23 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/09/24 20:41:38 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/09/27 19:44:56 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,26 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <stdint.h>
 # include <string.h>
 # include <unistd.h>
 # include <pthread.h>
 # include <ctype.h>
-# include <sys/time.h>
+# include <time.h>
 
 // ============================================================
 // ENUMS
 // ============================================================
+
+//	coder state
+enum e_coder_state
+{
+	IDLE,
+	COMPILING,
+	DEBUGGING,
+	REFACTORING,
+	BURNOUT
+};
 
 //	errors
 enum e_error_status
@@ -74,13 +85,14 @@ typedef struct s_coder
 	t_dongle		*first;
 	t_dongle		*second;
 	struct s_sim	*sim;
+	pthread_t		thread;
 	pthread_mutex_t	lock;
 }	t_coder;
 
 //	simulation
 typedef struct s_sim
 {
-	int				is_over;
+	int				is_running;
 	long			start_time;
 	t_args			*args;
 	t_coder			*coders;
@@ -105,6 +117,7 @@ int		is_valid_number(char *arg);
 int		is_num_overflow(char *arg);
 char	*ft_trim(char *str);
 char	*ft_strcpy(char *dest, char *src);
+long	get_time_in_ms(void);
 
 //	simulation
 int		init_simulation(t_sim *sim, t_args *args);
@@ -116,5 +129,11 @@ int		allocate_coders(t_sim *sim);
 int		allocate_dongles(t_sim *sim);
 void	free_coders(t_sim *sim);
 void	free_dongles(t_sim *sim);
+
+//	logs
+void	log_state(t_coder *coder, enum e_coder_state state);
+
+//	coder
+void	*coder_routine(void *arg);
 
 #endif

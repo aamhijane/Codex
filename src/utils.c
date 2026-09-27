@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 21:51:04 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/09/23 21:51:06 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/09/27 18:28:50 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,16 @@ char	*ft_strcpy(char *dest, char *src)
 	}
 	dest[i] = '\0';
 	return (dest);
+}
+
+long	get_time_in_ms(void)
+{
+	uint64_t		start_in_ms;
+	uint64_t		time_in_ms;
+	struct timespec	start;
+
+	clock_gettime(CLOCK_MONOTONIC, &start);
+	start_in_ms = ((uint64_t)start.tv_sec * 1000);
+	time_in_ms = start_in_ms + ((uint64_t)start.tv_nsec / 1000000);
+	return (time_in_ms);
 }
