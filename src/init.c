@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 22:46:34 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/09/27 19:30:52 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/09/28 21:32:14 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static int	init_coder(t_sim *sim, int i)
 	if (n > 1 && i == n - 1)
 	{
 		sim->coders[i].first = &sim->dongles[0];
-		sim->coders[i].second = &sim->dongles[(i + 1) % n];
+		sim->coders[i].second = &sim->dongles[i];
 	}
 	if (n == 1)
 		sim->coders[i].second = NULL;

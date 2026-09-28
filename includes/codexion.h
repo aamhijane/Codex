@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 21:50:23 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/09/27 19:44:56 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/09/28 20:55:12 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,5 +135,9 @@ void	log_state(t_coder *coder, enum e_coder_state state);
 
 //	coder
 void	*coder_routine(void *arg);
+
+//	dongle
+void	take_dongle(t_dongle *dongle);
+void	release_dongle(t_dongle *dongle);
 
 #endif
