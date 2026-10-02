@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 21:50:23 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/09/28 20:55:12 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/10/01 23:58:15 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ typedef struct s_sim
 	t_args			*args;
 	t_coder			*coders;
 	t_dongle		*dongles;
+	pthread_t		monitor;
 	pthread_mutex_t	sim_lock;
 	pthread_mutex_t	log_lock;
 }	t_sim;
@@ -134,10 +135,16 @@ void	free_dongles(t_sim *sim);
 void	log_state(t_coder *coder, enum e_coder_state state);
 
 //	coder
+int		coders_compiles_count(t_sim *sim, int idx);
 void	*coder_routine(void *arg);
 
 //	dongle
-void	take_dongle(t_dongle *dongle);
+int		take_dongle(t_sim *sim, t_dongle *dongle);
 void	release_dongle(t_dongle *dongle);
+void	broadcast_all(t_sim *sim);
+
+//	monitor
+int		is_sim_over(t_sim *sim);
+void	*monitor_routine(void *arg);
 
 #endif

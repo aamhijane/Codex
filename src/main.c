@@ -6,19 +6,22 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 21:51:16 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/09/27 19:44:23 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/10/02 00:27:00 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static int	start_threads(t_sim *sim)
+static int	coder_threads(t_sim *sim)
 {
 	int	i;
 
 	i = 0;
 	while (i < sim->args->number_of_coders)
 	{
+		pthread_mutex_lock(&sim->coders[i].lock);
+		sim->coders[i].last_compile_time = sim->start_time;
+		pthread_mutex_unlock(&sim->coders[i].lock);
 		sim->coders[i].sim = sim;
 		if (
 			pthread_create(
@@ -27,16 +30,50 @@ static int	start_threads(t_sim *sim)
 				coder_routine,
 				&sim->coders[i]) != 0
 		)
-			return (-1);
+			return (0);
 		i++;
 	}
+	return (1);
+}
+
+static int	monitor_thread(t_sim *sim)
+{
+	if (
+		pthread_create(
+			&sim->monitor,
+			NULL,
+			monitor_routine,
+			sim) != 0
+	)
+		return (0);
+	return (1);
+}
+
+static int	start_threads(t_sim *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->args->number_of_coders)
+	{
+		pthread_mutex_lock(&sim->coders[i].lock);
+		sim->coders[i].last_compile_time = sim->start_time;
+		pthread_mutex_unlock(&sim->coders[i].lock);
+		sim->coders[i].sim = sim;
+		i++;
+	}
+	if (!coder_threads(sim))
+		return (0);
+	if (!monitor_thread(sim))
+		return (0);
 	i = 0;
 	while (i < sim->args->number_of_coders)
 	{
 		pthread_join(sim->coders[i].thread, NULL);
 		i++;
 	}
-	return (0);
+	pthread_join(sim->monitor, NULL);
+	return (1);
 }
 
 int	main(int argc, char **argv)
@@ -55,9 +92,9 @@ int	main(int argc, char **argv)
 	sim.start_time = get_time_in_ms();
 	sim.is_running = 1;
 	pthread_mutex_unlock(&sim.sim_lock);
-	if (start_threads(&sim) != 0)
+	if (!start_threads(&sim))
 	{
-		printf("ERROR: threads fails due creation");
+		fprintf(stderr, "ERROR: threads fails due creation");
 		cleanup_simulation(&sim);
 		return (1);
 	}
