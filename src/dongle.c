@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/28 20:05:40 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/10/01 23:41:47 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/10/03 23:21:34 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	release_dongle(t_dongle *dongle)
 {
 	pthread_mutex_lock(&dongle->lock);
 	dongle->is_free = 1;
+	dongle->last_release_time = get_time_in_ms();
 	pthread_cond_broadcast(&dongle->cond);
 	pthread_mutex_unlock(&dongle->lock);
 }
