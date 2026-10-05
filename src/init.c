@@ -6,7 +6,7 @@
 /*   By: ayamhija <ayamhija@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/23 22:46:34 by ayamhija          #+#    #+#             */
-/*   Updated: 2026/10/01 22:23:06 by ayamhija         ###   ########.fr       */
+/*   Updated: 2026/10/04 00:10:40 by ayamhija         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static int	init_dongle(t_sim *sim, int i)
 	if (pthread_mutex_init(&sim->dongles[i].lock, NULL) != 0)
 		return (-1);
 	if (pthread_cond_init(&sim->dongles[i].cond, NULL) != 0)
+		return (-1);
+	if (heap_init(&sim->dongles[i].queue, sim->args->number_of_coders) != 0)
 		return (-1);
 	sim->dongles[i].is_free = 1;
 	sim->dongles[i].last_release_time = 0;
@@ -52,6 +54,7 @@ int	init_simulation(t_sim *sim, t_args *args)
 	if (pthread_mutex_init(&sim->log_lock, NULL) != 0)
 		return (-1);
 	sim->args = args;
+	sim->next_seq = 0;
 	allocate_dongles(sim);
 	allocate_coders(sim);
 	i = 0;
@@ -78,6 +81,7 @@ void	cleanup_simulation(t_sim *sim)
 		pthread_mutex_destroy(&sim->dongles[i].lock);
 		pthread_cond_destroy(&sim->dongles[i].cond);
 		pthread_mutex_destroy(&sim->coders[i].lock);
+		heap_free(&sim->dongles[i].queue);
 		i++;
 	}
 	free_dongles(sim);
