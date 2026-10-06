@@ -5,7 +5,7 @@
 NAME        = codexion
 
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror -pthread -fsanitize=address -g3
+CFLAGS      = -Wall -Wextra -Werror -pthread
 INC_DIR     = includes
 SRC_DIR     = src
 
@@ -25,6 +25,12 @@ $(NAME): $(OBJS)
 
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/codexion.h
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+tsan:
+	$(CC) $(CFLAGS) $(INCLUDES) -fsanitize=thread -g3 $(SRCS) -o $(NAME)
+
+asan:
+	$(CC) $(CFLAGS) $(INCLUDES) -fsanitize=address -g3 $(SRCS) -o $(NAME)
 
 clean:
 	rm -f $(OBJS)
