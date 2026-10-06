@@ -162,9 +162,12 @@ int			heap_init(t_heap *h, int capacity);
 t_heap_node	heap_peek(t_heap *h);
 t_heap_node	heap_pop(t_heap *h);
 void		heap_free(t_heap *h);
+void		heap_remove(t_heap *h, int coder_id);
+void		bubble_up(t_heap *h, int idx);
+void		bubble_down(t_heap *h, int idx);
 
 //	dongle
-int			take_dongle(t_sim *sim, t_dongle *dongle);
+int			take_dongle(t_sim *sim, t_coder *coder, t_dongle *dongle);
 void		release_dongle(t_dongle *dongle);
 void		broadcast_all(t_sim *sim);
 

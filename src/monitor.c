@@ -72,9 +72,10 @@ void	*monitor_routine(void *arg)
 		finished = 0;
 		while (i < sim->args->number_of_coders)
 		{
+			if (coders_compiles_count(sim, i))
+				finished++;
 			if (burnout_detected(sim, i))
 				return (NULL);
-			finished = coders_compiles_count(sim, i);
 			i++;
 		}
 		if (is_coders_finished(sim, finished))

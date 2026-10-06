@@ -53,12 +53,12 @@ static int	coder_routine_core(t_coder *coder, int *count)
 {
 	if (is_sim_over(coder->sim))
 		return (0);
-	if (take_dongle(coder->sim, coder->first) == 0)
+	if (take_dongle(coder->sim, coder, coder->first) == 0)
 		return (0);
 	log_state(coder, IDLE);
 	if (is_sim_over(coder->sim))
 		return (release_dongle(coder->first), 0);
-	if (take_dongle(coder->sim, coder->second) == 0)
+	if (take_dongle(coder->sim, coder, coder->second) == 0)
 		return (release_dongle(coder->first), 0);
 	log_state(coder, IDLE);
 	coder_compiling(coder, count);

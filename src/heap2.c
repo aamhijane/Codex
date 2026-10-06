@@ -21,13 +21,13 @@ static int	node_less(t_heap_node a, t_heap_node b)
 	return (0);
 }
 
-static void	bubble_up(t_heap *h)
+void	bubble_up(t_heap *h, int idx)
 {
 	int			i;
 	int			p;
 	t_heap_node	tmp;
 
-	i = h->size - 1;
+	i = idx;
 	while (i > 0)
 	{
 		p = (i - 1) / 2;
@@ -43,15 +43,15 @@ static void	bubble_up(t_heap *h)
 	}
 }
 
-static void	bubble_down(t_heap *h)
+void	bubble_down(t_heap *h, int idx)
 {
+	int			i;
 	int			smallest;
 	int			left;
 	int			right;
-	int			i;
 	t_heap_node	tmp;
 
-	i = 0;
+	i = idx;
 	while (1)
 	{
 		left = 2 * i + 1;
@@ -76,7 +76,7 @@ int	heap_push(t_heap *h, t_heap_node n)
 		return (-1);
 	h->nodes[h->size] = n;
 	h->size++;
-	bubble_up(h);
+	bubble_up(h, h->size - 1);
 	return (0);
 }
 
@@ -88,6 +88,6 @@ t_heap_node	heap_pop(t_heap *h)
 	h->nodes[0] = h->nodes[h->size - 1];
 	h->size--;
 	if (h->size > 0)
-		bubble_down(h);
+		bubble_down(h, 0);
 	return (top);
 }
